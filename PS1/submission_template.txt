@@ -1,0 +1,262 @@
+<?xml version="1.0"?>
+<pset>
+
+    <!--
+        CS 564, FALL 2017
+        PROBLEM SET 1 SUBMISSION TEMPLATE
+
+        Please copy and paste your SQL queries (and potentially Python code
+        for the bonus question) into the appropriate spots below. 
+
+        When submitting SQL queries, please do not include the intitial 
+        %sql or %%sql IPython commands. Just include the SQL code.
+
+        DO NOT DELETE THE <![CDATA[ ... ]]> LINES IN EACH <answer> TAG!
+        Doing so will break the autograder. To avoid accidentally breaking
+        something, please leave all existing comments in this template
+        intact in your submission.
+    -->
+
+    <student>
+        <name>
+            <!-- Insert your full name on the line below. -->
+            WILLIAM SHU
+            
+        </name>
+        <netid>
+            <!-- Insert your NetID (NOT your student ID number!) below. -->
+            FSHU2
+
+        </netid>
+        <studentid>
+            <!-- Insert your student ID number below. -->
+            9073748874
+        </studentid>
+    </student>
+
+
+    <!-- BEGIN PROBLEM 1 -->
+    <answer number="1a">
+        <!-- Paste your solution to problem 1, part (a) below this line. --><![CDATA[
+        
+        SELECT A.j AS "i", A.i AS "j", A.val FROM A ORDER BY i, j;
+
+        ]]><!-- End problem 1, part (a). -->
+    </answer>
+    <answer number="1b">
+        <!-- Paste your solution to problem 1, part (b) below this line. --><![CDATA[
+
+        SELECT SUM(A.val * B.val) FROM A,B WHERE A.j = 1 AND B.j = 2 AND A.i = B.i;
+
+        ]]><!-- End problem 1, part (b). -->
+    </answer>
+    <answer number="1c">
+        <!-- Paste your solution to problem 1, part (c) below this line. --><![CDATA[
+
+        SELECT SUM(A.val * B.val) FROM A,B WHERE A.i = 1 AND B.j = 2 AND A.j = B.i;
+
+        ]]><!-- End problem 1, part (c). -->
+    </answer>
+    <answer number="1d">
+        <!-- Paste your solution to problem 1, part (d) below this line. --><![CDATA[
+
+        SELECT A.i, B.j, SUM(A.val * B.val) AS VAL FROM A,B WHERE A.j = B.i GROUP BY A.i, B.j;
+
+        ]]><!-- End problem 1, part (d). -->
+    </answer>
+    <!-- END PROBLEM 1 -->
+
+
+    <!-- BEGIN PROBLEM 2 -->
+    <answer number="2a">
+        <!-- Paste your solution to problem 2, part (a) below this line. --><![CDATA[
+
+        SELECT station_id, COUNT(day) AS num_best_days
+		FROM 
+    		precipitation,
+    		(SELECT day AS maxdate, MAX(precipitation) AS maxprecipitation
+    		FROM precipitation
+    		GROUP BY day)
+		WHERE day = maxdate and precipitation = maxprecipitation
+		GROUP BY station_id
+		HAVING COUNT(day) > 1
+		ORDER BY num_best_days DESC;
+
+
+        ]]><!-- End problem 2, part (a). -->
+    </answer>
+    <answer number="2bi">
+        <!-- Paste your solution to problem 2, part (b.i) below this line. --><![CDATA[
+
+     	%%sql SELECT table1.p AS median
+		FROM X AS table1
+		WHERE
+    		(SELECT COUNT(*)
+     		FROM X AS table2 
+     		WHERE table1.p <= table2.p)
+    		=
+    		(SELECT COUNT(*)
+     		FROM X AS table2
+     	WHERE table1.p >= table2.p);
+
+        ]]><!-- End problem 2, part (b.i). -->
+    </answer>
+    <answer number="2bii">
+        <!-- Paste your solution to problem 2, part (b.ii) below this line. --><![CDATA[
+
+        %%sql 
+		SELECT AVG(precipitation) AS median FROM(
+    	SELECT precipitation
+    	FROM precipitation AS table1
+    	WHERE table1.station_id = 376101 AND
+        	(SELECT COUNT(*)
+         	FROM precipitation AS table2
+         	WHERE table1.precipitation >= table2.precipitation AND table2.station_id = 376101)
+        	>=
+        	(SELECT COUNT(*)
+         	FROM precipitation AS table2
+         	WHERE table1.precipitation < table2.precipitation AND table2.station_id = 376101)
+        	AND
+        	(SELECT COUNT(*)
+         	FROM precipitation AS table2
+         	WHERE table1.precipitation <= table2.precipitation AND table2.station_id = 376101)
+        	>=
+        	(SELECT COUNT(*)
+         	FROM precipitation AS table2
+         	WHERE table1.precipitation > table2.precipitation AND table2.station_id = 376101)
+		GROUP BY precipitation);
+
+        ]]><!-- End problem 2, part (b.ii). -->
+    </answer>
+    <answer number="2c">
+        <!-- Paste your solution to problem 2, part (c) below this line. --><![CDATA[
+
+		%%sql
+		SELECT table1.station_id, table1.min_daily
+		FROM(
+		    SELECT station_id, MIN(precipitation) AS min_daily
+		    FROM precipitation
+		    WHERE precipitation > 0
+		    GROUP BY station_id) AS table1
+		WHERE table1.min_daily >=(
+		    SELECT MAX(table2.precipitation) - 400
+		    FROM precipitation AS table2);
+
+        ]]><!-- End problem 2, part (c). -->
+    </answer>
+    <answer number="2d">
+        <!-- Paste your solution to problem 2, part (d) below this line. --><![CDATA[
+
+		%%sql
+		SELECT station_id, min_daily
+		FROM (
+		    SELECT station_id, precipitation AS min_daily
+		    FROM precipitation AS table1
+		    WHERE precipitation > 0
+		    AND NOT EXISTS (
+		        SELECT table2.precipitation
+		        FROM precipitation AS table2
+		        WHERE table2.station_id = table1.station_id AND precipitation > 0
+		        AND table2.precipitation < table1.precipitation)) AS table3
+		WHERE NOT EXISTS (
+		    SELECT table4.precipitation
+		    FROM precipitation AS table4
+		    WHERE table4.precipitation - 400 > table3.min_daily);
+
+        ]]><!-- End problem 2, part (d). -->
+    </answer>
+    <!-- END PROBLEM 2 -->
+
+
+    <!-- BEGIN PROBLEM 3 -->
+    <answer number="3a">
+        <!-- Paste your solution to problem 3, part (a) below this line. --><![CDATA[
+
+		%%sql
+		SELECT s1.B AS company, s1.d 
+		FROM streets s1 
+		WHERE s1.A = "UW-Madison" AND s1.d <= 10
+		    UNION
+		SELECT s2.B AS company, s1.d + S2.d 
+		FROM streets s1, streets s2 
+		WHERE s1.A = "UW-Madison" AND s1.d + S2.d <= 10 AND 
+		        s1.B = s2.A AND s2.B <> s1.A 
+		    UNION    
+		SELECT DISTINCT s3.B AS company, s1.d + s2.d + s3.d 
+		FROM streets s1, streets s2, streets s3 
+		WHERE  s1.A = "UW-Madison" AND s1.d + s2.d + s3.d <= 10 AND 
+		        s1.B = s2.A AND s2.B <> s1.A AND s2.B = s3.A AND s3.B <> s2.A AND s3.B <> s1.A;
+
+        ]]><!-- End problem 3, part (a). -->
+    </answer>
+    <answer number="3b">
+        <!-- Paste your solution to problem 3, part (b) below this line. --><![CDATA[
+
+		%%sql 
+		DROP VIEW IF EXISTS nocycle;
+		CREATE VIEW nocycle AS
+		SELECT s1.A, s1.B, s1.d AS dist
+		FROM streets s1
+		    UNION
+		SELECT s1.A, s2.B, s1.d + s2.d AS dist
+		FROM streets s1, streets s2
+		WHERE s1.B = s2.A
+		    UNION
+		SELECT s1.A, s3.B, s1.d + s2.d + s3.d AS dist
+		FROM streets s1, streets s2, streets s3
+		WHERE s1.B = s2.A AND s2.B = s3.A AND s3.B <> s1.A;
+
+		SELECT nc1.B AS company_1, nc2.B AS company_2, MIN(nc1.dist + nc2.dist)
+		FROM nocycle nc1, nocycle nc2
+		WHERE nc1.B <> nc2.B AND nc1.A = "UW-Madison" AND nc2.A = "UW-Madison"
+		GROUP BY nc1.B, nc2.B
+		HAVING MIN(nc1.dist + nc2.dist) <= 15;
+
+        ]]><!-- End problem 3, part (b). -->
+    </answer>
+    <answer number="3c">
+        <!-- Paste your solution to problem 3, part (c) below this line. --><![CDATA[
+
+		%%sql
+		DELETE FROM streets
+		WHERE id IN
+		(
+		    SELECT s3.id
+		    FROM streets s1, streets s2, streets s3
+		    WHERE s1.B = s2.A AND s2.B = s3.A AND s3.B = s1.A
+		    LIMIT 1
+		);
+
+        ]]><!-- End problem 3, part (c). -->
+    </answer>
+    <answer number="3d">
+        <!-- Paste your solution to problem 3, part (d) below this line. --><![CDATA[
+
+		%%sql
+		WITH RECURSIVE
+		    path(a, b, b_prev, d) AS (
+		        SELECT A, B, A, d 
+		        FROM streets
+		            UNION
+		        SELECT p.a, s.B, s.A, p.d + s.d
+		        FROM path p, streets s
+		        WHERE p.b = s.A AND s.B <> p.a AND s.B <> p.b_prev)
+		SELECT a AS A, b AS B, MAX(d) AS distance 
+		FROM path;
+
+        ]]><!-- End problem 3, part (d). -->
+    </answer>
+    <!-- END PROBLEM 3 -->
+
+
+    <!-- BEGIN BONUS -->
+    <answer number="bonus">
+        <!-- Paste your solution to the bonus problem below this line. --><![CDATA[
+
+
+
+        ]]><!-- End of bonus problem. -->
+    </answer>
+    <!-- END BONUS -->
+
+</pset>

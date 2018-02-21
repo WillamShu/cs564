@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<pset>
+
+    <!--
+        CS 564, FALL 2017
+        PROBLEM SET 2 SUBMISSION TEMPLATE
+
+        Please copy and paste your SQL queries (and potentially Python code
+        for the bonus question) into the appropriate spots below. 
+
+        When submitting SQL queries, please do not include the intitial 
+        %sql or %%sql IPython commands. Just include the SQL code.
+
+        DO NOT DELETE THE <![CDATA[ ... ]]> LINES IN EACH <answer> TAG!
+        Doing so will break the autograder. To avoid accidentally breaking
+        something, please leave all existing comments in this template
+        intact in your submission.
+    -->
+
+    <student>
+        <name>
+            <!-- Insert your full name on the line below. -->
+            William Shu
+            
+        </name>
+        <netid>
+            <!-- Insert your NetID (NOT your student ID number!) below. -->
+            fshu2
+
+        </netid>
+        <studentid>
+            <!-- Insert your student ID number below. -->
+            90737348874
+        </studentid>
+    </student>
+
+
+    <!-- BEGIN PROBLEM 1 -->
+    <answer number="1a">
+        <!-- Paste your solution to problem 1, part (a) below this line. --><![CDATA[
+        # NO
+        SELECT *
+        FROM hospital h1, hospital h2 
+        WHERE h1.provider = h2.provider 
+              AND (h1.hospital <> h2.hospital 
+                   OR h1.address <> h2.address 
+                   OR h1.city <> h2.city
+                   OR h1.state <> h2.state
+                   OR h1.zip <> h2.zip 
+                   OR h1.county <> h2.county 
+                   OR h1.phone_number <> h2.phone_number 
+                   OR h1.hospital_type <> h2.hospital_type 
+                   OR h1.hospital_owner <> h2.hospital_owner 
+                   OR h1.emergency_service <> h2.emergency_service
+                   OR h1.condition <> h2.condition 
+                   OR h1.measure_code <> h2.measure_code)
+        LIMIT 1;
+
+
+
+        ]]><!-- End problem 1, part (a). -->
+    </answer>
+    <answer number="1b">
+        <!-- Paste your solution to problem 1, part (b) below this line. --><![CDATA[
+
+        # YES
+        SELECT *
+        FROM hospital h1, hospital h2
+        WHERE (h1.zip = h2.zip) AND (h1.city <> h2.city OR h1.state <> h2.state)
+        LIMIT 1;
+
+
+        ]]><!-- End problem 1, part (b). -->
+    </answer>
+    <answer number="1c">
+        <!-- Paste your solution to problem 1, part (c) below this line. --><![CDATA[
+
+        SELECT *
+        FROM courses c1, courses c2
+        WHERE c1.course = c2.course AND NOT EXISTS (
+            SELECT *
+            FROM courses c3
+            WHERE c1.course = c3.course AND 
+                  c1.book = c3.book AND 
+                  c2.lecturer = c3.lecturer);
+
+
+        ]]><!-- End problem 1, part (c). -->
+    </answer>    
+    <!-- END PROBLEM 1 -->
+
+
+    <!-- BEGIN PROBLEM 2 -->
+    <answer number="2a">
+        <!-- Paste your solution to problem 2, part (a) below this line. --><![CDATA[
+
+        answer = True
+        explanation = "A+ = {A, C, D, E, F}, B+ = {B}, then 
+        {A, B}+ = {A, B, C, D, E, F}, which is the set of all attributes"
+
+        ]]><!-- End problem 2, part (a). -->
+    </answer>
+    <answer number="2b">
+        <!-- Paste your solution to problem 2, part (b) below this line. --><![CDATA[
+
+        answer = False
+        explanation = "The intersection of CDE and EFA (which is E) is not 
+        candidtate key for any listed relations."
+
+        ]]><!-- End problem 2, part (b). -->
+    </answer>    
+    <answer number="2c">
+        <!-- Paste your solution to problem 2, part (c) below this line. --><![CDATA[
+
+        answer = False
+        explanation = "A → D not fit into the FDs of decompositions"
+
+        ]]><!-- End problem 2, part (c). -->
+    </answer>
+    <answer number="2d">
+        <!-- Paste your solution to problem 2, part (d) below this line. --><![CDATA[
+
+        answer = False
+        explanation = "If we have XY, {X, Y} -> {Z}, then Key is {X, Y}. 
+        When we add {X} -> {Y}, then only X is the Key.
+
+        ]]><!-- End problem 2, part (d). -->
+    </answer>
+    <!-- END PROBLEM 2 -->
+
+    <!-- BEGIN BONUS -->
+    <answer number="bonus">
+        <!-- Paste your solution to the bonus problem below this line. --><![CDATA[
+
+
+
+        ]]><!-- End of bonus problem. -->
+    </answer>
+    <!-- END BONUS -->
+
+</pset>
