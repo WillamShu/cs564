@@ -1,4 +1,0 @@
-btree.cpp
-btree.h		£ºwe added many private methods and many unit tests. The tests can be invoked by calling _internalTest()
-main.cpp	: many additional tests, including negative number support and reading from existing index
-report.pdf	: design decisions and analysis
